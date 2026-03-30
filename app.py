@@ -6,7 +6,6 @@ import os
 
 st.title("💪 Asistente Fitness Inteligente PRO")
 
-# ARCHIVO DONDE SE GUARDA
 archivo = "progreso.csv"
 
 # DATOS
@@ -15,7 +14,7 @@ peso = st.number_input("Peso (kg)", min_value=30.0, max_value=200.0)
 altura = st.number_input("Altura (cm)", min_value=100.0, max_value=220.0)
 edad = st.number_input("Edad", min_value=10, max_value=100)
 
-if st.button("Analizar y guardar progreso"):
+if st.button("Analizar, generar y guardar"):
 
     # CALORÍAS
     if sexo == "Mujer":
@@ -42,8 +41,76 @@ if st.button("Analizar y guardar progreso"):
         objetivo = "definicion"
         st.warning("Sobrepeso → Bajar grasa")
 
-    # GUARDAR DATOS
-    nuevo_dato = pd.DataFrame({
+    st.subheader("🎯 Objetivo")
+    st.write(objetivo)
+
+    # 🍽️ ALIMENTACIÓN
+    st.subheader("🍽️ Alimentación")
+
+    st.write("🔴 Proteínas:")
+    st.write("- Pollo, huevo, carne, pescado, atún, lentejas")
+
+    st.write("🟡 Carbohidratos:")
+    st.write("- Arroz, papa, avena, pan, pasta")
+
+    st.write("🟢 Grasas saludables:")
+    st.write("- Aguacate, frutos secos, aceite de oliva")
+
+    # BASE DE EJERCICIOS
+    pecho_lista = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones"]
+    biceps_lista = ["Curl barra", "Curl alterno", "Curl martillo", "Curl concentrado", "Curl polea"]
+    espalda_lista = ["Dominadas", "Jalón pecho", "Remo barra", "Remo mancuerna", "Pullover"]
+    triceps_lista = ["Fondos", "Extensión polea", "Press francés", "Patada tríceps"]
+    hombro_lista = ["Press militar", "Elevaciones laterales", "Frontales", "Pájaros"]
+    pierna_lista = ["Sentadilla", "Prensa", "Peso muerto", "Zancadas", "Hip thrust", "Abducciones"]
+    core_lista = ["Crunch", "Elevaciones piernas", "Plancha", "Bicicleta"]
+
+    def elegir(lista):
+        return random.sample(lista, 4)
+
+    # DISTRIBUCIÓN
+    if objetivo == "masa":
+        dias = [
+            ("Lunes", "Pecho + Bíceps", elegir(pecho_lista), elegir(biceps_lista)),
+            ("Martes", "Pierna", elegir(pierna_lista), []),
+            ("Miércoles", "Espalda + Tríceps", elegir(espalda_lista), elegir(triceps_lista)),
+            ("Jueves", "Hombro", elegir(hombro_lista), []),
+            ("Viernes", "Pierna", elegir(pierna_lista), []),
+            ("Sábado", "Core", elegir(core_lista), [])
+        ]
+    elif objetivo == "definicion":
+        dias = [
+            ("Lunes", "Full Body", elegir(pecho_lista + espalda_lista), []),
+            ("Martes", "Pierna", elegir(pierna_lista), []),
+            ("Miércoles", "Torso", elegir(pecho_lista + espalda_lista), []),
+            ("Jueves", "Cardio + Core", elegir(core_lista), []),
+            ("Viernes", "Pierna", elegir(pierna_lista), []),
+            ("Sábado", "Cardio", elegir(core_lista), [])
+        ]
+    else:
+        dias = [
+            ("Lunes", "Pecho + Bíceps", elegir(pecho_lista), elegir(biceps_lista)),
+            ("Martes", "Pierna", elegir(pierna_lista), []),
+            ("Miércoles", "Espalda + Tríceps", elegir(espalda_lista), elegir(triceps_lista)),
+            ("Jueves", "Hombro", elegir(hombro_lista), []),
+            ("Viernes", "Pierna", elegir(pierna_lista), []),
+            ("Sábado", "Core", elegir(core_lista), [])
+        ]
+
+    # RUTINA
+    st.subheader("🏋️ Rutina")
+
+    for dia, nombre, lista1, lista2 in dias:
+        st.subheader(f"{dia}: {nombre}")
+        for e in lista1:
+            st.write("-", e)
+        for e in lista2:
+            st.write("-", e)
+
+    st.subheader("Domingo: Descanso")
+
+    # GUARDAR PROGRESO
+    nuevo = pd.DataFrame({
         "Fecha": [datetime.now().strftime("%Y-%m-%d %H:%M")],
         "Peso": [peso],
         "IMC": [round(imc, 2)],
@@ -52,25 +119,21 @@ if st.button("Analizar y guardar progreso"):
 
     if os.path.exists(archivo):
         datos = pd.read_csv(archivo)
-        datos = pd.concat([datos, nuevo_dato], ignore_index=True)
+        datos = pd.concat([datos, nuevo], ignore_index=True)
     else:
-        datos = nuevo_dato
+        datos = nuevo
 
     datos.to_csv(archivo, index=False)
 
-    st.success("✅ Progreso guardado correctamente")
+    st.success("✅ Progreso guardado")
 
-    # HISTORIAL
-    st.subheader("📈 Tu progreso")
-
+    st.subheader("📈 Historial")
     st.dataframe(datos)
 
-# 🔎 VER HISTORIAL SIN GUARDAR
+# VER HISTORIAL
 if st.button("Ver historial"):
-
     if os.path.exists(archivo):
         datos = pd.read_csv(archivo)
-        st.subheader("📊 Historial completo")
         st.dataframe(datos)
     else:
-        st.warning("Aún no hay datos guardados")
+        st.warning("No hay datos aún")
