@@ -15,11 +15,21 @@ peso = st.number_input("Peso (kg)", min_value=30.0, max_value=200.0)
 altura = st.number_input("Altura (cm)", min_value=100.0, max_value=220.0)
 edad = st.number_input("Edad", min_value=10, max_value=100)
 
-# FUNCIÓN SEGURA
-def elegir(lista, cantidad):
+# FUNCIÓN PARA EJERCICIOS
+def elegir(lista, cantidad, tipo):
     if cantidad > len(lista):
         cantidad = len(lista)
-    return random.sample(lista, cantidad)
+    seleccion = random.sample(lista, cantidad)
+
+    resultado = []
+    for e in seleccion:
+        if tipo == "masa":
+            resultado.append(f"{e} - 4x8")
+        elif tipo == "definicion":
+            resultado.append(f"{e} - 4x12")
+        else:
+            resultado.append(f"{e} - 4x10")
+    return resultado
 
 if st.button("Analizar, generar y guardar"):
 
@@ -34,13 +44,13 @@ if st.button("Analizar, generar y guardar"):
     imc = peso / (altura_m ** 2)
 
     st.subheader("🔎 Análisis corporal")
-    st.write("🔥 Calorías estimadas:", round(calorias, 2))
+    st.write("🔥 Calorías:", round(calorias, 2))
     st.write("📊 IMC:", round(imc, 2))
 
     # OBJETIVO
     if imc < 18.5:
         objetivo = "masa"
-        st.warning("Bajo peso → Ganar masa muscular")
+        st.warning("Bajo peso → Ganar masa")
     elif imc < 25:
         objetivo = "recomposicion"
         st.success("Peso normal → Mejorar físico")
@@ -48,100 +58,88 @@ if st.button("Analizar, generar y guardar"):
         objetivo = "definicion"
         st.warning("Sobrepeso → Bajar grasa")
 
-    st.subheader("🎯 Objetivo detectado")
+    st.subheader("🎯 Objetivo")
     st.write(objetivo)
 
     # 🍽️ ALIMENTACIÓN
-    st.subheader("🍽️ Alimentación (qué aporta cada alimento)")
+    st.subheader("🍽️ Alimentación")
 
-    st.write("🔴 PROTEÍNAS (construyen músculo):")
-    st.write("- Pollo, huevo, carne, pescado, atún, lentejas")
+    st.write("🔴 Proteínas: pollo, huevo, carne, pescado, lentejas")
+    st.write("🟡 Carbohidratos: arroz, papa, avena, pasta")
+    st.write("🟢 Grasas: aguacate, frutos secos")
 
-    st.write("🟡 CARBOHIDRATOS (energía):")
-    st.write("- Arroz, papa, avena, pan, pasta")
-
-    st.write("🟢 GRASAS SALUDABLES:")
-    st.write("- Aguacate, frutos secos, aceite de oliva")
-
-    if objetivo == "masa":
-        st.write("👉 Come más cantidad (superávit calórico)")
-    elif objetivo == "definicion":
-        st.write("👉 Controla porciones y reduce azúcar")
-    else:
-        st.write("👉 Mantén equilibrio")
-
-    # LISTAS DE EJERCICIOS
+    # LISTAS
     pecho = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones"]
     biceps = ["Curl barra", "Curl alterno", "Curl martillo", "Curl concentrado", "Curl polea"]
     espalda = ["Dominadas", "Jalón pecho", "Remo barra", "Remo mancuerna", "Pullover"]
     triceps = ["Fondos", "Extensión polea", "Press francés", "Patada tríceps"]
     hombro = ["Press militar", "Elevaciones laterales", "Frontales", "Pájaros"]
-    pierna = ["Sentadilla", "Prensa", "Peso muerto", "Zancadas", "Hip thrust", "Abducciones"]
+    pierna = ["Sentadilla", "Prensa", "Peso muerto", "Zancadas", "Hip thrust", "Abducciones", "Extensiones", "Curl femoral"]
     core = ["Crunch", "Elevaciones piernas", "Plancha", "Bicicleta"]
 
     st.subheader("🏋️ Rutina semanal")
 
-    # 🔥 DEFINICIÓN (full body mejorado)
+    # DEFINICIÓN (full body)
     if objetivo == "definicion":
 
         st.subheader("Lunes: Full Body")
-        for e in elegir(pecho + espalda + pierna, 8):
+        for e in elegir(pecho + espalda + pierna, 8, objetivo):
             st.write("-", e)
 
         st.subheader("Martes: Pierna")
-        for e in elegir(pierna, 4):
+        for e in elegir(pierna, 6, objetivo):
             st.write("-", e)
 
         st.subheader("Miércoles: Torso")
-        for e in elegir(pecho + espalda + hombro, 6):
+        for e in elegir(pecho + espalda + hombro, 6, objetivo):
             st.write("-", e)
 
         st.subheader("Jueves: Cardio + Core")
-        for e in elegir(core, 4):
+        for e in elegir(core, 4, objetivo):
             st.write("-", e)
 
         st.subheader("Viernes: Pierna")
-        for e in elegir(pierna, 4):
-            st.write("-", e)
-
-        st.subheader("Sábado: Core + Cardio")
-        for e in elegir(core, 4):
-            st.write("-", e)
-
-    # 🔥 MASA / RECOMPOSICIÓN
-    else:
-
-        st.subheader("Lunes: Pecho + Bíceps")
-        for e in elegir(pecho, 4):
-            st.write("-", e)
-        for e in elegir(biceps, 4):
-            st.write("-", e)
-
-        st.subheader("Martes: Pierna")
-        for e in elegir(pierna, 4):
-            st.write("-", e)
-
-        st.subheader("Miércoles: Espalda + Tríceps")
-        for e in elegir(espalda, 4):
-            st.write("-", e)
-        for e in elegir(triceps, 4):
-            st.write("-", e)
-
-        st.subheader("Jueves: Hombro")
-        for e in elegir(hombro, 4):
-            st.write("-", e)
-
-        st.subheader("Viernes: Pierna")
-        for e in elegir(pierna, 4):
+        for e in elegir(pierna, 6, objetivo):
             st.write("-", e)
 
         st.subheader("Sábado: Core")
-        for e in elegir(core, 4):
+        for e in elegir(core, 4, objetivo):
+            st.write("-", e)
+
+    # MASA / RECOMPOSICIÓN
+    else:
+
+        st.subheader("Lunes: Pecho + Bíceps")
+        for e in elegir(pecho, 4, objetivo):
+            st.write("-", e)
+        for e in elegir(biceps, 4, objetivo):
+            st.write("-", e)
+
+        st.subheader("Martes: Pierna")
+        for e in elegir(pierna, 6, objetivo):
+            st.write("-", e)
+
+        st.subheader("Miércoles: Espalda + Tríceps")
+        for e in elegir(espalda, 4, objetivo):
+            st.write("-", e)
+        for e in elegir(triceps, 4, objetivo):
+            st.write("-", e)
+
+        st.subheader("Jueves: Hombro")
+        for e in elegir(hombro, 4, objetivo):
+            st.write("-", e)
+
+        st.subheader("Viernes: Pierna")
+        for e in elegir(pierna, 6, objetivo):
+            st.write("-", e)
+
+        st.subheader("Sábado: Core")
+        for e in elegir(core, 4, objetivo):
             st.write("-", e)
 
     st.subheader("😴 Domingo: Descanso")
 
-    # GUARDAR PROGRESO
+    # GUARDAR
     nuevo = pd.DataFrame({
         "Fecha": [datetime.now().strftime("%Y-%m-%d %H:%M")],
         "Peso": [peso],
@@ -156,29 +154,23 @@ if st.button("Analizar, generar y guardar"):
 
     datos.to_csv(archivo, index=False)
 
-    st.success("✅ Progreso guardado correctamente")
+    st.success("✅ Progreso guardado")
 
-# 📊 GRÁFICAS
+# GRÁFICAS
 if st.button("Ver gráficas de progreso"):
 
     if os.path.exists(archivo):
         datos = pd.read_csv(archivo)
 
-        st.subheader("📈 Evolución del peso")
         fig1, ax1 = plt.subplots()
         ax1.plot(datos["Peso"])
         ax1.set_title("Peso")
-        ax1.set_xlabel("Registros")
-        ax1.set_ylabel("Kg")
         st.pyplot(fig1)
 
-        st.subheader("📈 Evolución del IMC")
         fig2, ax2 = plt.subplots()
         ax2.plot(datos["IMC"])
         ax2.set_title("IMC")
-        ax2.set_xlabel("Registros")
-        ax2.set_ylabel("IMC")
         st.pyplot(fig2)
 
     else:
-        st.warning("Aún no hay datos guardados")
+        st.warning("No hay datos aún")
