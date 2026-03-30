@@ -18,7 +18,7 @@ edad = st.number_input("Edad", min_value=10, max_value=100)
 # FUNCIÓN SEGURA
 def elegir(lista, cantidad):
     if cantidad > len(lista):
-        return random.sample(lista, len(lista))
+        cantidad = len(lista)
     return random.sample(lista, cantidad)
 
 if st.button("Analizar, generar y guardar"):
@@ -33,14 +33,14 @@ if st.button("Analizar, generar y guardar"):
     altura_m = altura / 100
     imc = peso / (altura_m ** 2)
 
-    st.subheader("🔎 Análisis")
-    st.write("🔥 Calorías:", round(calorias, 2))
+    st.subheader("🔎 Análisis corporal")
+    st.write("🔥 Calorías estimadas:", round(calorias, 2))
     st.write("📊 IMC:", round(imc, 2))
 
     # OBJETIVO
     if imc < 18.5:
         objetivo = "masa"
-        st.warning("Bajo peso → Ganar masa")
+        st.warning("Bajo peso → Ganar masa muscular")
     elif imc < 25:
         objetivo = "recomposicion"
         st.success("Peso normal → Mejorar físico")
@@ -48,15 +48,30 @@ if st.button("Analizar, generar y guardar"):
         objetivo = "definicion"
         st.warning("Sobrepeso → Bajar grasa")
 
+    st.subheader("🎯 Objetivo detectado")
+    st.write(objetivo)
+
     # 🍽️ ALIMENTACIÓN
-    st.subheader("🍽️ Alimentación")
+    st.subheader("🍽️ Alimentación (qué aporta cada alimento)")
 
-    st.write("Proteínas: pollo, huevo, carne, pescado, lentejas")
-    st.write("Carbohidratos: arroz, papa, avena, pasta")
-    st.write("Grasas: aguacate, frutos secos, aceite de oliva")
+    st.write("🔴 PROTEÍNAS (construyen músculo):")
+    st.write("- Pollo, huevo, carne, pescado, atún, lentejas")
 
-    # LISTAS (más grandes para evitar errores)
-    pecho = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones", "Press máquina"]
+    st.write("🟡 CARBOHIDRATOS (energía):")
+    st.write("- Arroz, papa, avena, pan, pasta")
+
+    st.write("🟢 GRASAS SALUDABLES:")
+    st.write("- Aguacate, frutos secos, aceite de oliva")
+
+    if objetivo == "masa":
+        st.write("👉 Come más cantidad (superávit calórico)")
+    elif objetivo == "definicion":
+        st.write("👉 Controla porciones y reduce azúcar")
+    else:
+        st.write("👉 Mantén equilibrio")
+
+    # LISTAS DE EJERCICIOS
+    pecho = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones"]
     biceps = ["Curl barra", "Curl alterno", "Curl martillo", "Curl concentrado", "Curl polea"]
     espalda = ["Dominadas", "Jalón pecho", "Remo barra", "Remo mancuerna", "Pullover"]
     triceps = ["Fondos", "Extensión polea", "Press francés", "Patada tríceps"]
@@ -64,8 +79,9 @@ if st.button("Analizar, generar y guardar"):
     pierna = ["Sentadilla", "Prensa", "Peso muerto", "Zancadas", "Hip thrust", "Abducciones"]
     core = ["Crunch", "Elevaciones piernas", "Plancha", "Bicicleta"]
 
-    st.subheader("🏋️ Rutina")
+    st.subheader("🏋️ Rutina semanal")
 
+    # 🔥 DEFINICIÓN (full body mejorado)
     if objetivo == "definicion":
 
         st.subheader("Lunes: Full Body")
@@ -88,10 +104,11 @@ if st.button("Analizar, generar y guardar"):
         for e in elegir(pierna, 4):
             st.write("-", e)
 
-        st.subheader("Sábado: Core")
+        st.subheader("Sábado: Core + Cardio")
         for e in elegir(core, 4):
             st.write("-", e)
 
+    # 🔥 MASA / RECOMPOSICIÓN
     else:
 
         st.subheader("Lunes: Pecho + Bíceps")
@@ -122,9 +139,9 @@ if st.button("Analizar, generar y guardar"):
         for e in elegir(core, 4):
             st.write("-", e)
 
-    st.subheader("Domingo: Descanso")
+    st.subheader("😴 Domingo: Descanso")
 
-    # GUARDAR
+    # GUARDAR PROGRESO
     nuevo = pd.DataFrame({
         "Fecha": [datetime.now().strftime("%Y-%m-%d %H:%M")],
         "Peso": [peso],
@@ -139,20 +156,29 @@ if st.button("Analizar, generar y guardar"):
 
     datos.to_csv(archivo, index=False)
 
-    st.success("Progreso guardado")
+    st.success("✅ Progreso guardado correctamente")
 
-# GRÁFICA SEGURA
-if st.button("Ver gráfica de progreso"):
+# 📊 GRÁFICAS
+if st.button("Ver gráficas de progreso"):
 
     if os.path.exists(archivo):
         datos = pd.read_csv(archivo)
 
-        fig, ax = plt.subplots()
-        ax.plot(datos["Peso"])
-        ax.set_title("Evolución del peso")
-        ax.set_xlabel("Registros")
-        ax.set_ylabel("Peso")
+        st.subheader("📈 Evolución del peso")
+        fig1, ax1 = plt.subplots()
+        ax1.plot(datos["Peso"])
+        ax1.set_title("Peso")
+        ax1.set_xlabel("Registros")
+        ax1.set_ylabel("Kg")
+        st.pyplot(fig1)
 
-        st.pyplot(fig)
+        st.subheader("📈 Evolución del IMC")
+        fig2, ax2 = plt.subplots()
+        ax2.plot(datos["IMC"])
+        ax2.set_title("IMC")
+        ax2.set_xlabel("Registros")
+        ax2.set_ylabel("IMC")
+        st.pyplot(fig2)
+
     else:
-        st.warning("No hay datos aún")
+        st.warning("Aún no hay datos guardados")
