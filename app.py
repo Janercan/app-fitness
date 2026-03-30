@@ -3,6 +3,7 @@ import random
 import pandas as pd
 from datetime import datetime
 import os
+import matplotlib.pyplot as plt
 
 st.title("💪 Asistente Fitness Inteligente PRO")
 
@@ -13,6 +14,10 @@ sexo = st.selectbox("Sexo", ["Mujer", "Hombre"])
 peso = st.number_input("Peso (kg)", min_value=30.0, max_value=200.0)
 altura = st.number_input("Altura (cm)", min_value=100.0, max_value=220.0)
 edad = st.number_input("Edad", min_value=10, max_value=100)
+
+# FUNCIONES
+def elegir(lista, cantidad=4):
+    return random.sample(lista, cantidad)
 
 if st.button("Analizar, generar y guardar"):
 
@@ -41,80 +46,89 @@ if st.button("Analizar, generar y guardar"):
         objetivo = "definicion"
         st.warning("Sobrepeso → Bajar grasa")
 
-    st.subheader("🎯 Objetivo")
-    st.write(objetivo)
-
     # 🍽️ ALIMENTACIÓN
     st.subheader("🍽️ Alimentación")
 
-    st.write("🔴 Proteínas:")
-    st.write("- Pollo, huevo, carne, pescado, atún, lentejas")
+    st.write("Proteínas: pollo, huevo, carne, pescado, lentejas")
+    st.write("Carbohidratos: arroz, papa, avena, pasta")
+    st.write("Grasas: aguacate, frutos secos, aceite de oliva")
 
-    st.write("🟡 Carbohidratos:")
-    st.write("- Arroz, papa, avena, pan, pasta")
+    # LISTAS
+    pecho = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones"]
+    biceps = ["Curl barra", "Curl alterno", "Curl martillo", "Curl concentrado", "Curl polea"]
+    espalda = ["Dominadas", "Jalón pecho", "Remo barra", "Remo mancuerna", "Pullover"]
+    triceps = ["Fondos", "Extensión polea", "Press francés", "Patada tríceps"]
+    hombro = ["Press militar", "Elevaciones laterales", "Frontales", "Pájaros"]
+    pierna = ["Sentadilla", "Prensa", "Peso muerto", "Zancadas", "Hip thrust", "Abducciones"]
+    core = ["Crunch", "Elevaciones piernas", "Plancha", "Bicicleta"]
 
-    st.write("🟢 Grasas saludables:")
-    st.write("- Aguacate, frutos secos, aceite de oliva")
-
-    # BASE DE EJERCICIOS
-    pecho_lista = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones"]
-    biceps_lista = ["Curl barra", "Curl alterno", "Curl martillo", "Curl concentrado", "Curl polea"]
-    espalda_lista = ["Dominadas", "Jalón pecho", "Remo barra", "Remo mancuerna", "Pullover"]
-    triceps_lista = ["Fondos", "Extensión polea", "Press francés", "Patada tríceps"]
-    hombro_lista = ["Press militar", "Elevaciones laterales", "Frontales", "Pájaros"]
-    pierna_lista = ["Sentadilla", "Prensa", "Peso muerto", "Zancadas", "Hip thrust", "Abducciones"]
-    core_lista = ["Crunch", "Elevaciones piernas", "Plancha", "Bicicleta"]
-
-    def elegir(lista):
-        return random.sample(lista, 4)
-
-    # DISTRIBUCIÓN
-    if objetivo == "masa":
-        dias = [
-            ("Lunes", "Pecho + Bíceps", elegir(pecho_lista), elegir(biceps_lista)),
-            ("Martes", "Pierna", elegir(pierna_lista), []),
-            ("Miércoles", "Espalda + Tríceps", elegir(espalda_lista), elegir(triceps_lista)),
-            ("Jueves", "Hombro", elegir(hombro_lista), []),
-            ("Viernes", "Pierna", elegir(pierna_lista), []),
-            ("Sábado", "Core", elegir(core_lista), [])
-        ]
-    elif objetivo == "definicion":
-        dias = [
-            ("Lunes", "Full Body", elegir(pecho_lista + espalda_lista), []),
-            ("Martes", "Pierna", elegir(pierna_lista), []),
-            ("Miércoles", "Torso", elegir(pecho_lista + espalda_lista), []),
-            ("Jueves", "Cardio + Core", elegir(core_lista), []),
-            ("Viernes", "Pierna", elegir(pierna_lista), []),
-            ("Sábado", "Cardio", elegir(core_lista), [])
-        ]
-    else:
-        dias = [
-            ("Lunes", "Pecho + Bíceps", elegir(pecho_lista), elegir(biceps_lista)),
-            ("Martes", "Pierna", elegir(pierna_lista), []),
-            ("Miércoles", "Espalda + Tríceps", elegir(espalda_lista), elegir(triceps_lista)),
-            ("Jueves", "Hombro", elegir(hombro_lista), []),
-            ("Viernes", "Pierna", elegir(pierna_lista), []),
-            ("Sábado", "Core", elegir(core_lista), [])
-        ]
-
-    # RUTINA
     st.subheader("🏋️ Rutina")
 
-    for dia, nombre, lista1, lista2 in dias:
-        st.subheader(f"{dia}: {nombre}")
-        for e in lista1:
+    # DISTRIBUCIÓN
+    if objetivo == "definicion":
+
+        # FULL BODY MÁS COMPLETO
+        st.subheader("Lunes: Full Body")
+        for e in elegir(pecho + espalda + pierna, 8):
             st.write("-", e)
-        for e in lista2:
+
+        st.subheader("Martes: Pierna")
+        for e in elegir(pierna, 4):
+            st.write("-", e)
+
+        st.subheader("Miércoles: Torso")
+        for e in elegir(pecho + espalda + hombro, 6):
+            st.write("-", e)
+
+        st.subheader("Jueves: Cardio + Core")
+        for e in elegir(core, 4):
+            st.write("-", e)
+
+        st.subheader("Viernes: Pierna")
+        for e in elegir(pierna, 4):
+            st.write("-", e)
+
+        st.subheader("Sábado: Cardio + Core")
+        for e in elegir(core, 4):
+            st.write("-", e)
+
+    else:
+        # RUTINA NORMAL
+        st.subheader("Lunes: Pecho + Bíceps")
+        for e in elegir(pecho, 4):
+            st.write("-", e)
+        for e in elegir(biceps, 4):
+            st.write("-", e)
+
+        st.subheader("Martes: Pierna")
+        for e in elegir(pierna, 4):
+            st.write("-", e)
+
+        st.subheader("Miércoles: Espalda + Tríceps")
+        for e in elegir(espalda, 4):
+            st.write("-", e)
+        for e in elegir(triceps, 4):
+            st.write("-", e)
+
+        st.subheader("Jueves: Hombro")
+        for e in elegir(hombro, 4):
+            st.write("-", e)
+
+        st.subheader("Viernes: Pierna")
+        for e in elegir(pierna, 4):
+            st.write("-", e)
+
+        st.subheader("Sábado: Core")
+        for e in elegir(core, 4):
             st.write("-", e)
 
     st.subheader("Domingo: Descanso")
 
-    # GUARDAR PROGRESO
+    # GUARDAR
     nuevo = pd.DataFrame({
         "Fecha": [datetime.now().strftime("%Y-%m-%d %H:%M")],
         "Peso": [peso],
-        "IMC": [round(imc, 2)],
-        "Objetivo": [objetivo]
+        "IMC": [round(imc, 2)]
     })
 
     if os.path.exists(archivo):
@@ -125,15 +139,20 @@ if st.button("Analizar, generar y guardar"):
 
     datos.to_csv(archivo, index=False)
 
-    st.success("✅ Progreso guardado")
+    st.success("Progreso guardado")
 
-    st.subheader("📈 Historial")
-    st.dataframe(datos)
+# 📈 GRÁFICA
+if st.button("Ver gráfica de progreso"):
 
-# VER HISTORIAL
-if st.button("Ver historial"):
     if os.path.exists(archivo):
         datos = pd.read_csv(archivo)
-        st.dataframe(datos)
+
+        plt.figure()
+        plt.plot(datos["Peso"])
+        plt.title("Evolución del peso")
+        plt.xlabel("Registros")
+        plt.ylabel("Peso")
+
+        st.pyplot(plt)
     else:
         st.warning("No hay datos aún")
