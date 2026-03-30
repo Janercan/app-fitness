@@ -4,10 +4,21 @@ import pandas as pd
 from datetime import datetime
 import os
 import matplotlib.pyplot as plt
+from PIL import Image
 
 st.title("💪 Asistente Fitness Inteligente PRO")
 
 archivo = "progreso.csv"
+
+# 📸 SUBIR FOTO
+st.subheader("📸 Análisis con imagen (beta)")
+
+imagen = st.file_uploader("Sube una foto de tu cuerpo", type=["jpg", "png", "jpeg"])
+
+if imagen is not None:
+    img = Image.open(imagen)
+    st.image(img, caption="Imagen cargada", use_column_width=True)
+    st.success("Imagen cargada correctamente")
 
 # DATOS
 sexo = st.selectbox("Sexo", ["Mujer", "Hombre"])
@@ -63,17 +74,9 @@ if st.button("Analizar, generar y guardar"):
 
     # 🍽️ ALIMENTACIÓN
     st.subheader("🍽️ Alimentación")
-
-    st.write("🔴 Proteínas: pollo, huevo, carne, pescado, lentejas")
-    st.write("🟡 Carbohidratos: arroz, papa, avena, pasta")
-    st.write("🟢 Grasas: aguacate, frutos secos")
-
-    if objetivo == "masa":
-        st.write("👉 Comer más (superávit calórico)")
-    elif objetivo == "definicion":
-        st.write("👉 Controlar porciones y reducir azúcares")
-    else:
-        st.write("👉 Mantener equilibrio")
+    st.write("Proteínas: pollo, huevo, carne, pescado, lentejas")
+    st.write("Carbohidratos: arroz, papa, avena, pasta")
+    st.write("Grasas: aguacate, frutos secos")
 
     # LISTAS
     pecho = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones"]
@@ -162,55 +165,19 @@ if st.button("Analizar, generar y guardar"):
 
     st.success("✅ Progreso guardado")
 
-# 📊 GRÁFICAS + ANÁLISIS
+# 📊 GRÁFICAS
 if st.button("Ver gráficas de progreso"):
 
     if os.path.exists(archivo):
         datos = pd.read_csv(archivo)
 
-        st.subheader("📈 Evolución del peso")
         fig1, ax1 = plt.subplots()
         ax1.plot(datos["Peso"])
         st.pyplot(fig1)
 
-        st.subheader("📈 Evolución del IMC")
         fig2, ax2 = plt.subplots()
         ax2.plot(datos["IMC"])
         st.pyplot(fig2)
-
-        # 🧠 ANÁLISIS AUTOMÁTICO
-        st.subheader("🧠 Análisis de progreso")
-
-        if len(datos) > 1:
-            peso_inicial = datos["Peso"].iloc[0]
-            peso_actual = datos["Peso"].iloc[-1]
-
-            diferencia = peso_actual - peso_inicial
-
-            st.write(f"Cambio de peso: {round(diferencia,2)} kg")
-
-            objetivo_actual = datos["Objetivo"].iloc[-1]
-
-            if objetivo_actual == "masa":
-                if diferencia > 0:
-                    st.success("Vas bien: estás ganando masa")
-                else:
-                    st.warning("Debes comer más para subir masa")
-
-            elif objetivo_actual == "definicion":
-                if diferencia < 0:
-                    st.success("Vas bien: estás perdiendo grasa")
-                else:
-                    st.warning("Debes ajustar dieta o cardio")
-
-            else:
-                if abs(diferencia) < 1:
-                    st.success("Peso estable, buen progreso")
-                else:
-                    st.warning("Mucho cambio, revisa tu plan")
-
-        else:
-            st.info("Necesitas más registros")
 
     else:
         st.warning("No hay datos aún")
