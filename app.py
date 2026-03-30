@@ -16,7 +16,7 @@ objetivo = st.selectbox(
 
 if st.button("Analizar y generar rutina"):
 
-    # 🔥 CALORÍAS (adaptado)
+    # 🔥 CALORÍAS
     if sexo == "Mujer":
         calorias = (10 * peso) + (6.25 * altura) - (5 * edad) - 161
     else:
@@ -44,58 +44,92 @@ if st.button("Analizar y generar rutina"):
         estado = "Obesidad"
         st.error("Obesidad")
 
-    # 💡 RECOMENDACIÓN
+    # RECOMENDACIÓN
     st.subheader("💡 Recomendación")
 
     if objetivo == "Bajar grasa":
         st.write("👉 Déficit calórico + cardio")
-
     elif objetivo == "Ganar masa muscular":
         st.write("👉 Superávit calórico + fuerza")
-
     elif objetivo == "Mejorar glúteos":
         st.write("👉 Frecuencia alta de tren inferior")
 
-    # 🏋️ RUTINAS ADAPTADAS
-    st.subheader("🏋️ Rutina personalizada")
+    # 🏋️ RUTINA COMPLETA (6 DÍAS)
+    st.subheader("🏋️ Rutina semanal completa")
 
-    # 🔥 MUJER (más enfoque glúteo/pierna)
-    if sexo == "Mujer":
+    # LUNES
+    st.subheader("📅 Lunes: Pecho + Bíceps")
+    st.write("Pecho:")
+    st.write("- Press de banca 4x10")
+    st.write("- Press inclinado 4x10")
+    st.write("- Aperturas 3x12")
+    st.write("- Cruce de poleas 3x12")
 
-        if objetivo == "Mejorar glúteos":
-            st.subheader("📅 Lunes: Glúteos")
-            st.write("- Hip thrust 4x12")
-            st.write("- Sentadilla 4x10")
-            st.write("- Abducciones 3x15")
-            st.write("- Patada de glúteo 3x15")
+    st.write("Bíceps:")
+    st.write("- Curl barra 4x10")
+    st.write("- Curl alterno 3x12")
+    st.write("- Curl martillo 3x12")
+    st.write("- Curl concentrado 3x10")
 
-            st.subheader("📅 Martes: Pierna")
-            st.write("- Prensa 4x12")
-            st.write("- Peso muerto 4x10")
-            st.write("- Zancadas 3x12")
+    # MARTES
+    st.subheader("📅 Martes: Pierna completa")
+    st.write("- Sentadilla 4x12")
+    st.write("- Prensa 4x12")
+    st.write("- Peso muerto 3x10")
+    st.write("- Curl femoral 3x12")
+    st.write("- Extensiones 3x12")
+    st.write("- Pantorrilla 4x15")
 
-            st.subheader("📅 Miércoles: Glúteos")
-            st.write("- Hip thrust 4x12")
-            st.write("- Sentadilla sumo 3x12")
+    # MIÉRCOLES
+    st.subheader("📅 Miércoles: Espalda + Tríceps")
+    st.write("Espalda:")
+    st.write("- Dominadas 4x8")
+    st.write("- Jalón al pecho 4x10")
+    st.write("- Remo barra 3x10")
+    st.write("- Remo mancuerna 3x12")
 
-            st.subheader("📅 Viernes: Glúteos")
-            st.write("- Hip thrust 4x12")
-            st.write("- Abducciones 3x15")
+    st.write("Tríceps:")
+    st.write("- Fondos 3x10")
+    st.write("- Extensión polea 3x12")
+    st.write("- Press francés 3x10")
+    st.write("- Patada tríceps 3x12")
 
-        else:
-            st.write("Rutina equilibrada con énfasis en tren inferior")
+    # JUEVES
+    st.subheader("📅 Jueves: Hombro + Trapecio")
+    st.write("- Press militar 4x10")
+    st.write("- Elevaciones laterales 3x12")
+    st.write("- Elevaciones frontales 3x12")
+    st.write("- Pájaros 3x12")
+    st.write("- Encogimientos 4x15")
 
-    # 💪 HOMBRE (más enfoque torso)
+    # VIERNES (adaptado)
+    st.subheader("📅 Viernes: Pierna completa")
+
+    if objetivo == "Mejorar glúteos" or sexo == "Mujer":
+        st.write("- Hip thrust 4x12")
+        st.write("- Sentadilla 4x10")
+        st.write("- Prensa 3x12")
+        st.write("- Abducciones 3x15")
+        st.write("- Curl femoral 3x12")
+        st.write("- Pantorrilla 4x15")
     else:
+        st.write("- Sentadilla 4x12")
+        st.write("- Peso muerto 4x10")
+        st.write("- Prensa 3x12")
+        st.write("- Curl femoral 3x12")
+        st.write("- Extensiones 3x12")
+        st.write("- Pantorrilla 4x15")
 
-        if objetivo == "Ganar masa muscular":
-            st.subheader("📅 Lunes: Pecho + Bíceps")
-            st.write("- Press banca 4x10")
-            st.write("- Curl bíceps 4x10")
+    # SÁBADO
+    st.subheader("📅 Sábado: Cardio + Abdominales")
+    st.write("Cardio:")
+    st.write("- 30-40 min caminata o trote")
 
-            st.subheader("📅 Miércoles: Espalda + Tríceps")
-            st.write("- Dominadas 4x8")
-            st.write("- Fondos 3x10")
+    st.write("Abdominales:")
+    st.write("- Crunch 3x20")
+    st.write("- Elevación de piernas 3x15")
+    st.write("- Plancha 3x30s")
+    st.write("- Bicicleta 3x20")
 
-        else:
-            st.write("Rutina equilibrada general")
+    # DOMINGO
+    st.subheader("😴 Domingo: Descanso")
