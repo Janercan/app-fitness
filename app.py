@@ -1,4 +1,5 @@
 import streamlit as st
+import random
 
 st.title("💪 Asistente Fitness Inteligente PRO")
 
@@ -21,13 +22,13 @@ if st.button("Analizar y generar rutina"):
     imc = peso / (altura_m ** 2)
 
     st.subheader("🔎 Análisis")
-    st.write("🔥 Calorías diarias:", round(calorias, 2))
+    st.write("🔥 Calorías:", round(calorias, 2))
     st.write("📊 IMC:", round(imc, 2))
 
-    # OBJETIVO AUTOMÁTICO
+    # OBJETIVO
     if imc < 18.5:
         objetivo = "masa"
-        st.warning("Bajo peso → Ganar masa muscular")
+        st.warning("Bajo peso → Ganar masa")
     elif imc < 25:
         objetivo = "recomposicion"
         st.success("Peso normal → Mejorar físico")
@@ -35,97 +36,86 @@ if st.button("Analizar y generar rutina"):
         objetivo = "definicion"
         st.warning("Sobrepeso → Bajar grasa")
 
-    st.subheader("🎯 Objetivo detectado")
+    st.subheader("🎯 Objetivo")
     st.write(objetivo)
 
-    # 🍽️ CONSEJOS DE ALIMENTACIÓN
-    st.subheader("🍽️ Consejos de alimentación")
+    # 🍽️ ALIMENTACIÓN
+    st.subheader("🍽️ Alimentación recomendada")
+
+    st.write("🔴 Proteínas (para músculo):")
+    st.write("- Pollo, huevo, carne, pescado, atún, lentejas")
+
+    st.write("🟡 Carbohidratos (energía):")
+    st.write("- Arroz, papa, avena, pan, pasta")
+
+    st.write("🟢 Grasas saludables:")
+    st.write("- Aguacate, frutos secos, aceite de oliva")
 
     if objetivo == "masa":
-        st.write("✔ Comer más calorías de las que gastas")
-        st.write("✔ Proteína: pollo, huevos, carne, pescado")
-        st.write("✔ Carbohidratos: arroz, papa, avena")
-        st.write("✔ Grasas saludables: aguacate, frutos secos")
-        st.write("❌ Evitar comer muy poco")
+        st.write("👉 Come más cantidad de estos alimentos")
 
     elif objetivo == "definicion":
-        st.write("✔ Comer menos calorías de las que gastas")
-        st.write("✔ Alta proteína (pollo, atún, huevos)")
-        st.write("✔ Verduras en todas las comidas")
-        st.write("✔ Beber mucha agua")
-        st.write("❌ Evitar azúcar y comida chatarra")
+        st.write("👉 Reduce azúcares y controla porciones")
 
     else:
-        st.write("✔ Alimentación balanceada")
-        st.write("✔ Buena proteína")
-        st.write("✔ Evitar excesos")
+        st.write("👉 Mantén equilibrio entre todos")
 
-    # LISTAS DE EJERCICIOS SEGÚN OBJETIVO
+    # 📌 BASE DE EJERCICIOS (LISTAS GRANDES)
+
+    pecho_lista = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones"]
+    biceps_lista = ["Curl barra", "Curl alterno", "Curl martillo", "Curl concentrado", "Curl polea"]
+    espalda_lista = ["Dominadas", "Jalón pecho", "Remo barra", "Remo mancuerna", "Pullover"]
+    triceps_lista = ["Fondos", "Extensión polea", "Press francés", "Patada tríceps"]
+    hombro_lista = ["Press militar", "Elevaciones laterales", "Frontales", "Pájaros"]
+    pierna_lista = ["Sentadilla", "Prensa", "Peso muerto", "Zancadas", "Hip thrust", "Abducciones"]
+    core_lista = ["Crunch", "Elevaciones piernas", "Plancha", "Bicicleta"]
+
+    # FUNCIÓN PARA ELEGIR 4 EJERCICIOS ALEATORIOS
+    def elegir(lista):
+        return random.sample(lista, 4)
+
+    # 📅 DISTRIBUCIÓN SEGÚN OBJETIVO
 
     if objetivo == "masa":
-        pecho = ["Press banca 4x8", "Press inclinado 4x8", "Fondos 4x10", "Aperturas 4x10"]
-        biceps = ["Curl barra 4x10", "Curl alterno 4x10", "Curl martillo 4x10", "Curl concentrado 4x10"]
-        pierna = ["Sentadilla 4x8", "Prensa 4x10", "Peso muerto 4x8", "Curl femoral 4x10"]
+        dias = [
+            ("Lunes", "Pecho + Bíceps", elegir(pecho_lista), elegir(biceps_lista)),
+            ("Martes", "Pierna", elegir(pierna_lista), []),
+            ("Miércoles", "Espalda + Tríceps", elegir(espalda_lista), elegir(triceps_lista)),
+            ("Jueves", "Hombro", elegir(hombro_lista), []),
+            ("Viernes", "Pierna", elegir(pierna_lista), []),
+            ("Sábado", "Core", elegir(core_lista), [])
+        ]
 
     elif objetivo == "definicion":
-        pecho = ["Press banca 4x12", "Flexiones 4x15", "Aperturas 4x15", "Cruce poleas 4x15"]
-        biceps = ["Curl barra 4x12", "Curl alterno 4x12", "Curl polea 4x15", "Curl martillo 4x12"]
-        pierna = ["Sentadilla 4x12", "Zancadas 4x12", "Prensa 4x15", "Saltos 3x15"]
+        dias = [
+            ("Lunes", "Full Body", elegir(pecho_lista + espalda_lista), []),
+            ("Martes", "Pierna", elegir(pierna_lista), []),
+            ("Miércoles", "Torso", elegir(pecho_lista + espalda_lista), []),
+            ("Jueves", "Cardio + Core", elegir(core_lista), []),
+            ("Viernes", "Pierna", elegir(pierna_lista), []),
+            ("Sábado", "Cardio", elegir(core_lista), [])
+        ]
 
     else:
-        pecho = ["Press banca 4x10", "Press inclinado 4x10", "Aperturas 4x12", "Cruce poleas 4x12"]
-        biceps = ["Curl barra 4x10", "Curl alterno 4x12", "Curl martillo 4x12", "Curl polea 4x12"]
-        pierna = ["Sentadilla 4x10", "Prensa 4x12", "Peso muerto 4x10", "Curl femoral 4x12"]
+        dias = [
+            ("Lunes", "Pecho + Bíceps", elegir(pecho_lista), elegir(biceps_lista)),
+            ("Martes", "Pierna", elegir(pierna_lista), []),
+            ("Miércoles", "Espalda + Tríceps", elegir(espalda_lista), elegir(triceps_lista)),
+            ("Jueves", "Hombro", elegir(hombro_lista), []),
+            ("Viernes", "Pierna", elegir(pierna_lista), []),
+            ("Sábado", "Core", elegir(core_lista), [])
+        ]
 
-    # Ajuste MUJER (más glúteo)
-    if sexo == "Mujer":
-        pierna = ["Hip thrust 4x12", "Sentadilla 4x10", "Abducciones 4x15", "Peso muerto 4x10"]
+    # 🏋️ MOSTRAR RUTINA
+    st.subheader("🏋️ Rutina semanal")
 
-    # OTROS GRUPOS
-    espalda = ["Dominadas 4x8", "Jalón pecho 4x10", "Remo barra 4x10", "Remo mancuerna 4x10"]
-    triceps = ["Fondos 4x10", "Extensión polea 4x12", "Press francés 4x10", "Patada 4x12"]
-    hombro = ["Press militar 4x10", "Elevaciones laterales 4x12", "Frontales 4x12", "Pájaros 4x12"]
-    trapecio = ["Encogimientos 4x15", "Remo al cuello 4x12", "Face pull 4x12", "Farmer walk 3x30s"]
+    for dia, nombre, lista1, lista2 in dias:
+        st.subheader(f"📅 {dia}: {nombre}")
+        
+        for e in lista1:
+            st.write("-", e)
 
-    # 🏋️ RUTINA
-    st.subheader("🏋️ Rutina semanal (6 días)")
-
-    st.subheader("📅 Lunes: Pecho + Bíceps")
-    for e in pecho:
-        st.write("-", e)
-    for e in biceps:
-        st.write("-", e)
-
-    st.subheader("📅 Martes: Pierna")
-    for e in pierna:
-        st.write("-", e)
-
-    st.subheader("📅 Miércoles: Espalda + Tríceps")
-    for e in espalda:
-        st.write("-", e)
-    for e in triceps:
-        st.write("-", e)
-
-    st.subheader("📅 Jueves: Hombro + Trapecio")
-    for e in hombro:
-        st.write("-", e)
-    for e in trapecio:
-        st.write("-", e)
-
-    st.subheader("📅 Viernes: Pierna")
-    for e in pierna:
-        st.write("-", e)
-
-    st.subheader("📅 Sábado: Cardio + Abdominales")
-
-    if objetivo == "definicion":
-        st.write("- Cardio 40-50 min")
-    else:
-        st.write("- Cardio 20-30 min")
-
-    st.write("- Crunch 4x20")
-    st.write("- Elevaciones 4x15")
-    st.write("- Plancha 4x30s")
-    st.write("- Bicicleta 4x20")
+        for e in lista2:
+            st.write("-", e)
 
     st.subheader("😴 Domingo: Descanso")
