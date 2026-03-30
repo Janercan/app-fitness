@@ -10,15 +10,29 @@ st.title("💪 Asistente Fitness Inteligente PRO")
 
 archivo = "progreso.csv"
 
-# 📸 SUBIR FOTO
-st.subheader("📸 Análisis con imagen (beta)")
+# 📸 SUBIDA DE 4 FOTOS
+st.subheader("📸 Análisis corporal con imágenes")
 
-imagen = st.file_uploader("Sube una foto de tu cuerpo", type=["jpg", "png", "jpeg"])
+frente = st.file_uploader("Foto de frente", type=["jpg", "png", "jpeg"])
+espalda = st.file_uploader("Foto de espalda", type=["jpg", "png", "jpeg"])
+lado_izq = st.file_uploader("Foto lado izquierdo", type=["jpg", "png", "jpeg"])
+lado_der = st.file_uploader("Foto lado derecho", type=["jpg", "png", "jpeg"])
 
-if imagen is not None:
-    img = Image.open(imagen)
-    st.image(img, caption="Imagen cargada", use_column_width=True)
-    st.success("Imagen cargada correctamente")
+if frente and espalda and lado_izq and lado_der:
+    st.success("✅ Todas las imágenes cargadas correctamente")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.image(Image.open(frente), caption="Frente")
+        st.image(Image.open(lado_izq), caption="Lado izquierdo")
+
+    with col2:
+        st.image(Image.open(espalda), caption="Espalda")
+        st.image(Image.open(lado_der), caption="Lado derecho")
+
+else:
+    st.warning("⚠️ Sube las 4 fotos para un análisis más completo")
 
 # DATOS
 sexo = st.selectbox("Sexo", ["Mujer", "Hombre"])
