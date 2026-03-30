@@ -19,8 +19,6 @@ if st.button("Calcular y recomendar"):
 
     st.subheader("🏋️ Rutina recomendada")
 
-       st.subheader("🏋️ Rutina recomendada")
-
     if objetivo == "Bajar grasa":
         st.write("🔥 Día 1: Full Body")
         st.write("- Sentadilla 4x12")
