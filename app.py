@@ -15,7 +15,7 @@ peso = st.number_input("Peso (kg)", min_value=30.0, max_value=200.0)
 altura = st.number_input("Altura (cm)", min_value=100.0, max_value=220.0)
 edad = st.number_input("Edad", min_value=10, max_value=100)
 
-# FUNCIÓN PARA EJERCICIOS
+# FUNCIÓN EJERCICIOS
 def elegir(lista, cantidad, tipo):
     if cantidad > len(lista):
         cantidad = len(lista)
@@ -68,6 +68,13 @@ if st.button("Analizar, generar y guardar"):
     st.write("🟡 Carbohidratos: arroz, papa, avena, pasta")
     st.write("🟢 Grasas: aguacate, frutos secos")
 
+    if objetivo == "masa":
+        st.write("👉 Comer más (superávit calórico)")
+    elif objetivo == "definicion":
+        st.write("👉 Controlar porciones y reducir azúcares")
+    else:
+        st.write("👉 Mantener equilibrio")
+
     # LISTAS
     pecho = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones"]
     biceps = ["Curl barra", "Curl alterno", "Curl martillo", "Curl concentrado", "Curl polea"]
@@ -79,7 +86,6 @@ if st.button("Analizar, generar y guardar"):
 
     st.subheader("🏋️ Rutina semanal")
 
-    # DEFINICIÓN (full body)
     if objetivo == "definicion":
 
         st.subheader("Lunes: Full Body")
@@ -106,7 +112,6 @@ if st.button("Analizar, generar y guardar"):
         for e in elegir(core, 4, objetivo):
             st.write("-", e)
 
-    # MASA / RECOMPOSICIÓN
     else:
 
         st.subheader("Lunes: Pecho + Bíceps")
@@ -143,7 +148,8 @@ if st.button("Analizar, generar y guardar"):
     nuevo = pd.DataFrame({
         "Fecha": [datetime.now().strftime("%Y-%m-%d %H:%M")],
         "Peso": [peso],
-        "IMC": [round(imc, 2)]
+        "IMC": [round(imc, 2)],
+        "Objetivo": [objetivo]
     })
 
     if os.path.exists(archivo):
@@ -156,21 +162,55 @@ if st.button("Analizar, generar y guardar"):
 
     st.success("✅ Progreso guardado")
 
-# GRÁFICAS
+# 📊 GRÁFICAS + ANÁLISIS
 if st.button("Ver gráficas de progreso"):
 
     if os.path.exists(archivo):
         datos = pd.read_csv(archivo)
 
+        st.subheader("📈 Evolución del peso")
         fig1, ax1 = plt.subplots()
         ax1.plot(datos["Peso"])
-        ax1.set_title("Peso")
         st.pyplot(fig1)
 
+        st.subheader("📈 Evolución del IMC")
         fig2, ax2 = plt.subplots()
         ax2.plot(datos["IMC"])
-        ax2.set_title("IMC")
         st.pyplot(fig2)
+
+        # 🧠 ANÁLISIS AUTOMÁTICO
+        st.subheader("🧠 Análisis de progreso")
+
+        if len(datos) > 1:
+            peso_inicial = datos["Peso"].iloc[0]
+            peso_actual = datos["Peso"].iloc[-1]
+
+            diferencia = peso_actual - peso_inicial
+
+            st.write(f"Cambio de peso: {round(diferencia,2)} kg")
+
+            objetivo_actual = datos["Objetivo"].iloc[-1]
+
+            if objetivo_actual == "masa":
+                if diferencia > 0:
+                    st.success("Vas bien: estás ganando masa")
+                else:
+                    st.warning("Debes comer más para subir masa")
+
+            elif objetivo_actual == "definicion":
+                if diferencia < 0:
+                    st.success("Vas bien: estás perdiendo grasa")
+                else:
+                    st.warning("Debes ajustar dieta o cardio")
+
+            else:
+                if abs(diferencia) < 1:
+                    st.success("Peso estable, buen progreso")
+                else:
+                    st.warning("Mucho cambio, revisa tu plan")
+
+        else:
+            st.info("Necesitas más registros")
 
     else:
         st.warning("No hay datos aún")
