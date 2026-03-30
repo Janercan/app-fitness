@@ -15,8 +15,10 @@ peso = st.number_input("Peso (kg)", min_value=30.0, max_value=200.0)
 altura = st.number_input("Altura (cm)", min_value=100.0, max_value=220.0)
 edad = st.number_input("Edad", min_value=10, max_value=100)
 
-# FUNCIONES
-def elegir(lista, cantidad=4):
+# FUNCIÓN SEGURA
+def elegir(lista, cantidad):
+    if cantidad > len(lista):
+        return random.sample(lista, len(lista))
     return random.sample(lista, cantidad)
 
 if st.button("Analizar, generar y guardar"):
@@ -53,8 +55,8 @@ if st.button("Analizar, generar y guardar"):
     st.write("Carbohidratos: arroz, papa, avena, pasta")
     st.write("Grasas: aguacate, frutos secos, aceite de oliva")
 
-    # LISTAS
-    pecho = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones"]
+    # LISTAS (más grandes para evitar errores)
+    pecho = ["Press banca", "Press inclinado", "Aperturas", "Cruce poleas", "Fondos", "Flexiones", "Press máquina"]
     biceps = ["Curl barra", "Curl alterno", "Curl martillo", "Curl concentrado", "Curl polea"]
     espalda = ["Dominadas", "Jalón pecho", "Remo barra", "Remo mancuerna", "Pullover"]
     triceps = ["Fondos", "Extensión polea", "Press francés", "Patada tríceps"]
@@ -64,10 +66,8 @@ if st.button("Analizar, generar y guardar"):
 
     st.subheader("🏋️ Rutina")
 
-    # DISTRIBUCIÓN
     if objetivo == "definicion":
 
-        # FULL BODY MÁS COMPLETO
         st.subheader("Lunes: Full Body")
         for e in elegir(pecho + espalda + pierna, 8):
             st.write("-", e)
@@ -88,12 +88,12 @@ if st.button("Analizar, generar y guardar"):
         for e in elegir(pierna, 4):
             st.write("-", e)
 
-        st.subheader("Sábado: Cardio + Core")
+        st.subheader("Sábado: Core")
         for e in elegir(core, 4):
             st.write("-", e)
 
     else:
-        # RUTINA NORMAL
+
         st.subheader("Lunes: Pecho + Bíceps")
         for e in elegir(pecho, 4):
             st.write("-", e)
@@ -141,18 +141,18 @@ if st.button("Analizar, generar y guardar"):
 
     st.success("Progreso guardado")
 
-# 📈 GRÁFICA
+# GRÁFICA SEGURA
 if st.button("Ver gráfica de progreso"):
 
     if os.path.exists(archivo):
         datos = pd.read_csv(archivo)
 
-        plt.figure()
-        plt.plot(datos["Peso"])
-        plt.title("Evolución del peso")
-        plt.xlabel("Registros")
-        plt.ylabel("Peso")
+        fig, ax = plt.subplots()
+        ax.plot(datos["Peso"])
+        ax.set_title("Evolución del peso")
+        ax.set_xlabel("Registros")
+        ax.set_ylabel("Peso")
 
-        st.pyplot(plt)
+        st.pyplot(fig)
     else:
         st.warning("No hay datos aún")
